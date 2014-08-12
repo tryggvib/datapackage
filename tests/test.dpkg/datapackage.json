@@ -1,6 +1,21 @@
 {
   "name": "test.dpkg",
-  "resources": [], 
+  "resources": [
+      {
+          "data": {"foo": "bar"},
+          "path": "foobar.json",
+          "url": "http://foobar.com/foobar.json",
+          "name": "foobar",
+          "format": "json",
+          "mediatype": "application/json",
+          "encoding": "utf-8",
+          "bytes": 14,
+          "hash": "94232c5b8fc9272f6f73a1e36eb68fcf",
+          "schema": "",
+          "sources": [],
+          "license": "CC-BY"
+      }
+  ], 
   "license": "ODC-BY",
   "datapackage_version": "1.0-beta.10", 
   "title": "A simple datapackage for testing", 

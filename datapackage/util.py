@@ -118,7 +118,7 @@ def verify_version(version):
     return format_version(parse_version(version))
 
 
-def get_licenses():
+def load_licenses():
     """Reads a dictionary of licenses, and their corresponding URLs, out
     of a JSON file."""
     # figure out the real directory name relative to this file, so we
@@ -157,3 +157,18 @@ def is_email(val):
 
     """
     return bool(re.match(r"[^@]+@[^@]+\.[^@]+", val))
+
+
+def is_mimetype(val):
+    """Checks to see whether a string is a valid mimetype. This is a very
+    basic check that just looks for <something>/<something>.
+
+    """
+    return bool(re.match(r"[^/]+/[^/]+", val))
+
+
+def get_size_from_url(url):
+    site = urllib.urlopen(url)
+    meta = site.info()
+    size = int(meta.getheaders("Content-Length")[0])
+    return size
