@@ -38,7 +38,6 @@ from .util import (Specification, verify_version, parse_version,
                    format_version, is_local, is_url)
 from . import compat
 
-
 class DataPackage(Specification):
     """
     Package for loading and managing a data package as defined by:
@@ -697,7 +696,10 @@ class DataPackage(Specification):
             # None of the location types were in resource
             raise NotImplementedError('Datapackage currently only supports resource url and path')
 
-        resource_file = (line.decode(resource.get('encoding', 'utf-8'))
+        if hasattr(resource_file, 'iter_lines'):
+            resource_file = compat.StringIO(resource_file.text)
+        else:
+            resource_file = (line.decode(resource.get('encoding', 'utf-8'))
                          for line in resource_file)
         # We assume CSV so we create the csv file
         reader = compat.csv_reader(resource_file)
