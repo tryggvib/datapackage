@@ -83,6 +83,8 @@ class DataPackage(Specification):
         'array': list,
         }
 
+    SESSION = None
+
     def __init__(self, *args, **kwargs):
         """
         Create or load an existing DataPackage.
@@ -99,6 +101,10 @@ class DataPackage(Specification):
             super(DataPackage, self).__init__(*args, **kwargs)
         elif len(args) == 1:
             self.base = args[0]
+            try:
+                self.SESSION = kwargs['session']
+            except KeyError:
+                self.session = None
             descriptor = self.get_descriptor()
             super(DataPackage, self).__init__(**descriptor)
         else:
@@ -178,14 +184,20 @@ class DataPackage(Specification):
         # -- we don't want to just use os.path.join because otherwise
         # on Windows it will try to create URLs with backslashes
         if is_url(path):
-            return compat.urlopen(path)
+            if self.SESSION is None:
+                return compat.urlopen(path)
+            else:
+                return self.SESSION.get(path)
         else:
             if is_local(base):
                 resource_path = os.path.join(base, path)
                 return io.open(resource_path, 'rb')  # Read file in binary mode to mimick behavior of urlopen
             else:
                 resource_path = compat.parse.urljoin(base, path)
-                return compat.urlopen(resource_path)  # Do not use os.path.join here since url separators do not change with platform
+                if self.SESSION is None:
+                    return compat.urlopen(resource_path)  # Do not use os.path.join here since url separators do not change with platform
+                else:
+                    return self.SESSION.get(resource_path)
 
     @property
     def name(self):
@@ -587,14 +599,14 @@ class DataPackage(Specification):
         the descriptor URN.
         """
         descriptor = self.open_resource('datapackage.json')
-
-        # Load the descriptor json contents
-        str_descriptor = descriptor.read().decode('utf-8') # The spec doesn't seem to say anything about the encoding of the datapackage.json files themselves
-
-        json_descriptor = json.loads(str_descriptor)
-
-        # Return the descriptor json contents (as the dict json.load returns
-        return json_descriptor
+        if hasattr(descriptor, 'json'): # requests.models.Response
+            return descriptor.json()
+        else:
+            str_descriptor = descriptor.read().decode('utf-8') # The spec doesn't seem to say anything about the encoding of the datapackage.json files themselves
+            # Load the descriptor json contents
+            json_descriptor = json.loads(str_descriptor)
+            # Return the descriptor json contents (as the dict json.load returns
+            return json_descriptor
 
     @property
     def resources(self):

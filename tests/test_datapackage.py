@@ -331,3 +331,13 @@ class TestDatapackage(object):
         as_dict = self.dpkg.as_dict()
         resource = as_dict['resources'][0]
         assert 'is_local' not in list(resource.keys())
+
+    def test_datapackage_with_cache(self):
+        """Test datapackage with a cached session requests_cache.CachedSession"""
+        import requests_cache
+        import datetime
+        session = requests_cache.CachedSession(cache_name='cache', backend='sqlite', expire_after=datetime.timedelta(days=60))
+        print(session)
+        datapkg = datapackage.DataPackage('http://data.okfn.org/data/cpi/', session=session)
+        print(datapkg)
+        # run it again
