@@ -104,7 +104,7 @@ class DataPackage(Specification):
             try:
                 self.SESSION = kwargs['session']
             except KeyError:
-                self.session = None
+                self.SESSION = None
             descriptor = self.get_descriptor()
             super(DataPackage, self).__init__(**descriptor)
         else:
