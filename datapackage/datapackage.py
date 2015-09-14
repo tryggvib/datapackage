@@ -696,7 +696,7 @@ class DataPackage(Specification):
             # None of the location types were in resource
             raise NotImplementedError('Datapackage currently only supports resource url and path')
 
-        if hasattr(resource_file, 'iter_lines'):
+        if hasattr(resource_file, 'text'):
             resource_file = compat.StringIO(resource_file.text)
         else:
             resource_file = (line.decode(resource.get('encoding', 'utf-8'))
