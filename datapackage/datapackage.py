@@ -186,7 +186,7 @@ class DataPackage(Specification):
             if self.SESSION is None:
                 return compat.urlopen(path)
             else:
-                return self.SESSION.get(path)
+                return self.SESSION.get(path, stream=True)
         else:
             if is_local(base):
                 resource_path = os.path.join(base, path)
@@ -196,7 +196,7 @@ class DataPackage(Specification):
                 if self.SESSION is None:
                     return compat.urlopen(resource_path)  # Do not use os.path.join here since url separators do not change with platform
                 else:
-                    return self.SESSION.get(resource_path)
+                    return self.SESSION.get(resource_path, stream=True)
 
     @property
     def name(self):
@@ -697,7 +697,7 @@ class DataPackage(Specification):
             raise NotImplementedError('Datapackage currently only supports resource url and path')
 
         if hasattr(resource_file, 'text'):
-            resource_file = compat.StringIO(resource_file.text)
+            resource_file = resource_file.raw
         else:
             resource_file = (line.decode(resource.get('encoding', 'utf-8'))
                          for line in resource_file)

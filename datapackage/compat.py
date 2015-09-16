@@ -37,8 +37,6 @@ if is_py2:
         for row in reader:
             yield [str(cell, 'utf-8') for cell in row]
 
-    from StringIO import StringIO
-
 elif is_py3:
     from urllib import parse
     from urllib.request import urlopen
@@ -50,7 +48,6 @@ elif is_py3:
     basestring = (str, bytes)
     numeric_types = (int, float)
     next = lambda x: x.next()
-    from io import StringIO
 
 def to_bytes(textstring, encoding='utf-8'):
     """Convert a text string to a byte string"""
