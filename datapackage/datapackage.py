@@ -38,6 +38,7 @@ from .util import (Specification, verify_version, parse_version,
                    format_version, is_local, is_url)
 from . import compat
 
+
 class DataPackage(Specification):
     """
     Package for loading and managing a data package as defined by:
@@ -696,7 +697,7 @@ class DataPackage(Specification):
             # None of the location types were in resource
             raise NotImplementedError('Datapackage currently only supports resource url and path')
 
-        if hasattr(resource_file, 'text'):
+        if hasattr(resource_file, 'raw'):
             resource_file = resource_file.raw
         else:
             resource_file = (line.decode(resource.get('encoding', 'utf-8'))

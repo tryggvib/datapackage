@@ -49,6 +49,7 @@ elif is_py3:
     numeric_types = (int, float)
     next = lambda x: x.next()
 
+
 def to_bytes(textstring, encoding='utf-8'):
     """Convert a text string to a byte string"""
     return textstring.encode(encoding)
