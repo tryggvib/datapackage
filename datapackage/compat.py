@@ -50,6 +50,16 @@ elif is_py3:
     next = lambda x: x.next()
 
 
+if is_py2:
+    import mock as mocklib
+
+if is_py3:
+    if is_py32:
+        import mock as mocklib
+    else:
+        from unittest import mock as mocklib
+
+
 def to_bytes(textstring, encoding='utf-8'):
     """Convert a text string to a byte string"""
     return textstring.encode(encoding)

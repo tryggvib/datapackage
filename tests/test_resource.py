@@ -10,15 +10,6 @@ from datapackage import compat
 import posixpath
 from nose.tools import raises
 
-if compat.is_py2:
-    import mock as mocklib
-
-if compat.is_py3:
-    if compat.is_py32:
-        import mock as mocklib
-    else:
-        from unittest import mock as mocklib
-
 
 class TestDatapackage(object):
     def setup(self):
@@ -31,10 +22,10 @@ class TestDatapackage(object):
         pass
 
     def patch_urlopen_size(self, mock_urlopen, size):
-        mock_meta = mocklib.Mock()
+        mock_meta = compat.mocklib.Mock()
         mock_meta.getheaders.side_effect = [[size]]
 
-        mock_site = mocklib.Mock()
+        mock_site = compat.mocklib.Mock()
         mock_site.info.return_value = mock_meta
 
         mock_urlopen.return_value = mock_site
@@ -284,7 +275,7 @@ class TestDatapackage(object):
         self.resource.path = None
         self.resource._path_bytes()
 
-    @mocklib.patch('datapackage.compat.urlopen')
+    @compat.mocklib.patch('datapackage.compat.urlopen')
     def test_url_bytes(self, mock_urlopen):
         """Checks that the size is computed correctly from the url"""
         self.patch_urlopen_size(mock_urlopen, '14')
@@ -329,7 +320,7 @@ class TestDatapackage(object):
         self.resource.update_bytes()
         assert self.resource.bytes == 14
 
-    @mocklib.patch('datapackage.compat.urlopen')
+    @compat.mocklib.patch('datapackage.compat.urlopen')
     def test_compute_bytes_from_url(self, mock_urlopen):
         """Test computing the size from the url"""
         self.patch_urlopen_size(mock_urlopen, '14')
@@ -339,7 +330,7 @@ class TestDatapackage(object):
         self.resource.update_bytes()
         assert self.resource.bytes == 14
 
-    @mocklib.patch('datapackage.compat.urlopen')
+    @compat.mocklib.patch('datapackage.compat.urlopen')
     def test_update_bytes_url_unchanged(self, mock_urlopen):
         """Test that updating the size from the url does not throw an
         error when the size has not changed.
@@ -371,7 +362,7 @@ class TestDatapackage(object):
         self.resource.update_bytes()
 
     @raises(RuntimeError)
-    @mocklib.patch('datapackage.compat.urlopen')
+    @compat.mocklib.patch('datapackage.compat.urlopen')
     def test_update_bytes_url_changed(self, mock_urlopen):
         """Check that updating the bytes from the url throws an error when the
         size has changed.
@@ -404,7 +395,7 @@ class TestDatapackage(object):
         assert self.resource.bytes == 14
         assert self.resource['bytes'] == 14
 
-    @mocklib.patch('datapackage.compat.urlopen')
+    @compat.mocklib.patch('datapackage.compat.urlopen')
     def test_update_bytes_url_changed_unverified(self, mock_urlopen):
         """Check that updating the bytes from the url works, when the size has
         changed but the size is not being verified.
@@ -636,7 +627,7 @@ class TestDatapackage(object):
         foreign_key = datapackage.schema.ForeignKey(fields=[villain],
                                                     reference=reference)
 
-    @mocklib.patch('datapackage.compat.urlopen')
+    @compat.mocklib.patch('datapackage.compat.urlopen')
     def test_open_resource_url(self, mocklib_urlopen):
         dpkg = datapackage.DataPackage("tests/test.dpkg_url/")
         list(dpkg.data) # Force the iteration over the iterable returned from data property.
@@ -644,7 +635,7 @@ class TestDatapackage(object):
 
     def test_open_resource_local(self):
         dpkg = datapackage.DataPackage("tests/test.dpkg_local/")
-        with mocklib.patch('io.open') as mocklib_open:
+        with compat.mocklib.patch('io.open') as mocklib_open:
             list(dpkg.data) # Force the iteration over the iterable returned from data property.
             mocklib_open.assert_called_once()
 

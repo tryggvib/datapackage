@@ -10,15 +10,6 @@ from nose.tools import raises
 import unittest
 from datapackage import compat
 
-if compat.is_py2:
-    import mock as mocklib
-
-if compat.is_py3:
-    if compat.is_py32:
-        import mock as mocklib
-    else:
-        from unittest import mock as mocklib
-
 
 class TestDatapackage(object):
 
@@ -207,14 +198,14 @@ class TestDatapackage(object):
         self.dpkg.image = "bar.jpg"
         assert self.dpkg.image == "bar.jpg"
 
-    @mocklib.patch('datapackage.compat.urlopen')
+    @compat.mocklib.patch('datapackage.compat.urlopen')
     def test_web_url(self, mock_urlopen):
         """Try reading a datapackage from the web"""
 
         # setup the mock for url read
         with io.open("tests/cpi/datapackage.json", "rb") as fh:
             metadata = fh.read()
-        mock = mocklib.Mock()
+        mock = compat.mocklib.Mock()
         mock.read.side_effect = [metadata]
         mock_urlopen.return_value = mock
 
